@@ -1,0 +1,15 @@
+﻿@model ProductDetailsModel
+
+@if (Model.VideoModels.Any())
+{
+    <div class="video-gallery">
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsBeforeVideos, additionalData = Model })
+        <div class="video-thumbs row">
+            @foreach (var video in Model.VideoModels)
+            {
+                <iframe class="thumb-item col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6" src="@video.VideoUrl" width="@video.Width" height="@video.Height" frameborder="0" allow="@video.Allow"></iframe>
+            }
+        </div>
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.ProductDetailsAfterVideos, additionalData = Model })
+    </div>
+}

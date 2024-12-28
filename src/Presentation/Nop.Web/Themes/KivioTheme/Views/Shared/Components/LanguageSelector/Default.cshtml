@@ -1,0 +1,59 @@
+﻿@model LanguageSelectorModel
+
+@inject Nop.Core.IWebHelper webHelper
+@if (Model.AvailableLanguages.Count > 1)
+{
+    <div class="language-selector form-group">
+        @{
+            var returnUrl = webHelper.GetRawUrl(Context.Request);
+           
+            if (Model.UseImages)
+            {
+                <div class="select-option selected-img clickable-menu">
+                    @foreach (var lang in Model.AvailableLanguages)
+                    {
+                        @if (lang.Id == Model.CurrentLanguageId)
+                        {
+                            <img class="selected-value" title="@lang.Name" alt="@lang.Name" src="@Url.Content("~/images/flags/" + lang.FlagImageFileName)" />
+                        }
+                    }
+                </div>
+                <ul class="language-list drop-down-list">
+                    @foreach (var lang in Model.AvailableLanguages)
+                    {
+                        <li class="@(lang.Id == Model.CurrentLanguageId ? "selected value" : "value")">
+                            <a href="@Url.RouteUrl("ChangeLanguage", new { langid = lang.Id, returnUrl }, webHelper.GetCurrentRequestProtocol())" title="@lang.Name">
+                                <img title="@lang.Name" alt="@lang.Name" src="@Url.Content("~/images/flags/" + lang.FlagImageFileName)" />
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                var languages = await Model.AvailableLanguages.SelectAwait(async lang => new SelectListItem
+                    {
+                        Text = lang.Name,
+                        Value = Url.RouteUrl("ChangeLanguage", new { langid = lang.Id, returnUrl }, webHelper.GetCurrentRequestProtocol()),
+                        Selected = lang.Id.Equals(Model.CurrentLanguageId)
+                    }).ToListAsync();
+                //<select id="customerlanguage" name="customerlanguage" class="form-control" asp-items="@languages" onchange="setLocation(this.value);" aria-label="@T("Languages.Selector.Label")"></select>
+                <div class="select-option selected-value clickable-menu">
+                    @foreach (var language in languages)
+                    {
+                        if (language.Selected)
+                            @language.Text
+                    }
+                </div>
+                <ul class="language-list drop-down-list">
+                    @foreach (var language in languages)
+                    {
+                        <li class="@(language.Selected?"selected value":"value")" onclick="setLocation(`@(language.Value)`);">
+                            @language.Text
+                        </li>
+                    }
+                </ul>
+            }
+        }
+    </div>
+}

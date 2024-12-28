@@ -1,0 +1,44 @@
+﻿@model ProfilePostsModel
+@if (Model.Posts.Count > 0)
+{
+    <div class="latest-posts">
+
+        @foreach (var item in Model.Posts)
+        {
+            <div class="topic">
+                <div class="topic-main">
+                    <div class="topic-title">
+                        <label>@T("Profile.Topic"):</label>
+                        @Html.RouteLink(item.ForumTopicTitle, "TopicSlug", new { id = item.ForumTopicId, slug = item.ForumTopicSlug })
+                    </div>
+                    <div class="topic-data">
+                        <label>@T("Profile.PostedOn"):</label>
+                        <span>@item.Posted</span>
+                    </div>
+                </div>
+                <div class="topic-body">
+                    <p>@Html.Raw(item.ForumPostText)</p>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="no-data">
+        <div class="box-shadow-container">
+            <div class="box-content">
+                <div class="box-title">@T("Profile.LatestPosts.NoPosts")</div>
+            </div>
+        </div>
+    </div>
+}
+@{
+    var pager = await Html.PagerAsync(Model.PagerModel);
+}
+@if (!string.IsNullOrEmpty(await pager.RenderHtmlContentAsync()))
+{
+    <div class="pager Page navigation">
+        @pager
+    </div>
+}

@@ -1,0 +1,28 @@
+﻿@model ActiveDiscussionsModel
+
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("Forum.PageTitle.ActiveDiscussions").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-active-discussions-page");
+
+}
+@*page title*@
+@section Breadcrumb
+{
+    <div class="page-title">
+        <div class="container">
+            <div class="content">
+                @await Component.InvokeAsync(typeof(ForumBreadcrumbViewComponent))
+            </div>
+        </div>
+    </div>
+}
+<div class="page active-discussions-page">
+    @await Html.PartialAsync("_ForumHeader")
+    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.BoardsActivediscussionsAfterHeader, additionalData = Model })
+    @await Html.PartialAsync("_ActiveTopics", Model)
+    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.BoardsActivediscussionsAfterTopics, additionalData = Model })
+</div>

@@ -1,0 +1,70 @@
+﻿@model CustomerAvatarModel
+
+@{
+    Layout = "_ColumnsTwo";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.Account").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-account-page");
+    NopHtml.AppendPageCssClassParts("html-avatar-page");
+}
+
+@*page title*@
+@section Breadcrumb
+{
+    <div class="page-title">
+        <div class="container">
+            <div class="content">
+                <h1>@T("Account.MyAccount") - @T("Account.Avatar")</h1>
+            </div>
+        </div>
+    </div>
+}
+
+@section left
+{
+    @await Component.InvokeAsync(typeof(CustomerNavigationViewComponent), new { selectedTabId = CustomerNavigationEnum.Avatar })
+}
+<form asp-route="CustomerAvatar" method="post" enctype="multipart/form-data">
+    <div class="page account-page avatar-page">
+        <div class="page-body">
+            @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CustomerAvatarTop, additionalData = Model })
+            <div class="row">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <div class="avatar-section">
+                        <div class="fieldset">
+                            <div class="form-group">
+                                @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+                                {
+                                    <div class="image">
+                                        <img src="@(Model.AvatarUrl)" alt="avatar" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-user"></i>
+                                }
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 upload-file">
+                                    <input name="uploadedFile" class="form-control-file" accept="image/jpeg, image/gif" type="file" />
+                                </div>
+                                <div class="info">
+                                    @T("Account.Avatar.UploadRules")
+                                </div>
+                            </div>
+                        </div>
+                        <div asp-validation-summary="ModelOnly" class="message-error"></div>
+                        <div class="buttons">
+                            <button type="submit" name="upload-avatar" class="button-1 btn btn-primary upload-avatar-button">@T("Common.Upload")</button>
+                            @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+                            {
+                                <button type="submit" name="remove-avatar" class="button-2 btn btn-default remove-avatar-button">@T("Account.Avatar.RemoveAvatar")</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CustomerAvatarBottom, additionalData = Model })
+        </div>
+    </div>
+</form>

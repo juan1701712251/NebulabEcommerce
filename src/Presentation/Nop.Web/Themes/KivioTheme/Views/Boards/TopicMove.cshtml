@@ -1,0 +1,51 @@
+﻿@model TopicMoveModel
+
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("Forum.PageTitle.MoveTopic").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-move-topic-page");
+
+}
+
+@*page title*@
+@section Breadcrumb
+{
+    <div class="page-title">
+        <div class="container">
+            <div class="content">
+                <h1>@T("Forum.MoveTopic")</h1>
+                @await Component.InvokeAsync(typeof(ForumBreadcrumbViewComponent), new { forumTopicId = Model.Id })
+            </div>
+        </div>
+    </div>
+}
+<div class="page move-topic-page">
+    <div class="page-body">
+        <div class="row">
+            <div class="col-12 col-sm-12 offset-md-2 col-md-8 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+                <form asp-route="TopicMove" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="fieldset">
+                        <div class="form-fields">
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-form-label">@T("Forum.SelectTheForumToMoveTopic"):</label>
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <select class="form-control form-control" asp-for="ForumSelected" asp-items="@(new SelectList(Model.ForumList, "Value", "Text"))"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="buttons">
+                        <button type="submit" class="button-1 btn btn-primary submit-forum-topic-button">@T("Forum.Submit")</button>
+                        <button type="button" class="button-2 btn btn-default cancel-forum-topic-button" onclick="setLocation('@Url.RouteUrl("TopicSlug", new {id = Model.Id, slug = Model.TopicSeName})')">@T("Forum.Cancel")</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

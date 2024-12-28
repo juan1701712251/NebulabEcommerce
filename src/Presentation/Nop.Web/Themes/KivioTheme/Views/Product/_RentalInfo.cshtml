@@ -1,0 +1,82 @@
+﻿@model ProductDetailsModel
+@using Nop.Core.Domain.Catalog
+@using Nop.Services.Helpers
+@inject CatalogSettings catalogSettings
+@inject IUserAgentHelper userAgentHelper
+@if (Model.IsRental)
+{
+    <div class="attributes rental-attributes">
+        @{
+            var startDateControlId = $"rental_start_date_{Model.Id}";
+            var endDateControlId = $"rental_end_date_{Model.Id}";
+            var dateControlChangeHandlerFuncName = $"on_rental_datepicker_select_{Model.Id}";
+            var datePickerFormat = Html.GetJQueryDateFormat();//java-script format
+            var isMobileDevice = userAgentHelper.IsMobileDevice();
+            <div class="attribute-item form-group">
+                <div class="row">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                        <label class="attribute-label col-form-label">
+                            @T("Products.RentalStartDate"):
+                        </label>
+                        <div class="attribute-data">
+                            <input id="@(startDateControlId)" name="@(startDateControlId)" type="text" class="datepicker form-control" placeholder="@T("Products.RentalStartDate")" value="@(Model.RentalStartDate.HasValue ? Model.RentalStartDate.Value.ToShortDateString() : null)" @if(isMobileDevice){<text>readonly</text>}/>
+                            <span class="required">*</span>
+                            <script asp-location="Footer">
+                                $(function () {
+                                    $("#@(startDateControlId)").datepicker({ dateFormat: "@datePickerFormat", onSelect: @(dateControlChangeHandlerFuncName) });
+                                });
+                            </script>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                        <label class="attribute-label col-form-label">
+                            @T("Products.RentalEndDate"):
+                        </label>
+                        <div class="attribute-data">
+                            <input id="@(endDateControlId)" name="@(endDateControlId)" type="text" class="datepicker form-control" placeholder="@T("Products.RentalEndDate")" value="@(Model.RentalEndDate.HasValue ? Model.RentalEndDate.Value.ToShortDateString() : null)" @if(isMobileDevice){<text>readonly</text>}/>
+                            <span class="required">*</span>
+                            <script asp-location="Footer">
+                                $(function () {
+                                    $("#@(endDateControlId)").datepicker({ dateFormat: "@datePickerFormat", onSelect: @(dateControlChangeHandlerFuncName) });
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <script asp-location="Footer">
+            function @(dateControlChangeHandlerFuncName)() {
+                @{
+                    //almost the same implementation is used in the \Views\Product\_ProductAttributes.cshtml file
+                    var productId = Model.Id;
+                    if (catalogSettings.AjaxProcessAttributeChange)
+                    {
+                        <text>
+                        $.ajax({
+                            cache: false,
+                            url: "@Html.Raw(Url.RouteUrl("ProductDetailsAttributeChange", new { productId = productId, validateAttributeConditions = false, loadPicture = false }))",
+                            data: $('#product-details-form').serialize(),
+                            type: "POST",
+                            success: function (data, textStatus, jqXHR) {
+                                if (data.sku) {
+                                    $('#sku-@productId').text(data.sku);
+                                }
+                                if (data.mpn) {
+                                    $('#mpn-@productId').text(data.mpn);
+                                }
+                                if (data.gtin) {
+                                    $('#gtin-@productId').text(data.gtin);
+                                }
+                                if (data.price) {
+                                    $('.price-value-@productId').text(data.price);
+                                }
+                            }
+                        });
+                        </text>
+                    }
+                }
+            }
+        </script>
+    </div>
+}

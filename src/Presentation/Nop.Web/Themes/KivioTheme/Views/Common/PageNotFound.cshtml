@@ -1,0 +1,28 @@
+﻿
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.PageNotFound").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-not-found-page");
+}
+@*page title*@
+@section Breadcrumb
+{
+    <div class="page-title">
+        <div class="container">
+            <div class="content">
+                <h1>@T("PageTitle.PageNotFound")</h1>
+            </div>
+        </div>
+    </div>
+}
+<div class="page not-found-page">
+    <div class="page-body">
+        @await Component.InvokeAsync(typeof(TopicBlockViewComponent), new { systemName = "PageNotFound" })
+        <div class="not-found">
+            @*<button class="button-2 btn btn-default shopping-button" onclick="setLocation('@Url.RouteUrl("Homepage")')">@T("Furnish.Cart.Page.Empty.Shopping.Button")</button>*@
+        </div>
+    </div>
+</div>

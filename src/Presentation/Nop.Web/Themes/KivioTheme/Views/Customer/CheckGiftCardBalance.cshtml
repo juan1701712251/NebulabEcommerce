@@ -1,0 +1,102 @@
+﻿@model CheckGiftCardBalanceModel
+
+@using Nop.Core
+@using Nop.Services.Customers
+@inject IWorkContext workContext
+@inject ICustomerService customerService
+
+@{
+    var isRegisterCustomer = await customerService.IsRegisteredAsync(await workContext.GetCurrentCustomerAsync());
+    Layout = isRegisterCustomer ? "_ColumnsTwo" : "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.CheckGiftCardBalance").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-account-page");
+}
+
+@*page title*@
+@section Breadcrumb
+{
+    <div class="page-title">
+        <div class="container">
+            <div class="content">
+                @if (isRegisterCustomer)
+                {
+                    <h1>@T("Account.MyAccount") - @T("PageTitle.CheckGiftCardBalance")</h1>
+                }
+                else
+                {
+                    <h1>@T("PageTitle.CheckGiftCardBalance")</h1>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@if (isRegisterCustomer)
+{
+    @section left
+    {
+        @await Component.InvokeAsync(typeof(CustomerNavigationViewComponent), new { selectedTabId = CustomerNavigationEnum.CheckGiftCardBalance })
+    }
+}
+
+
+<div class="page account-page check-gift-card-balance-page">
+    <div class="page-body">
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CustomerCheckGiftCardBalanceTop, additionalData = Model })
+        @if (!string.IsNullOrEmpty(Model.Message))
+        {
+            <div class="message-error">
+                @Model.Message
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.Result))
+        {
+            <div class="result">
+                @string.Format(T("ShoppingCart.Totals.GiftCardInfo.Remaining").Text, @Model.Result)
+            </div>
+        }
+        <form asp-controller="Customer" asp-action="CheckGiftCardBalance" method="post">
+            <div class="row">
+                <div class="col-12 col-sm-12 offset-md-2 col-md-8 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+                    <div asp-validation-summary="ModelOnly" class="message-error"></div>
+                    <div class="fieldset">
+                        <div class="form-fields">
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-form-label" asp-for="GiftCardCode" asp-postfix=":"></label>
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                        <input asp-for="GiftCardCode" placeholder="@T("ShoppingCart.GiftCardCouponCode.Tooltip")" class="fullname form-control" />
+                                        <nop-required />
+                                        <span asp-validation-for="GiftCardCode"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="captcha-box col-12 offset-lg-1">
+                                        <nop-captcha />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="buttons">
+                        <button type="submit" name="checkbalancegiftcard" id="checkbalancegiftcard" class="button-1 btn btn-primary check-gift-card-balance-button">@T("CheckGiftCard.GiftCardCouponCode.Button")</button>
+                        <script asp-location="Footer">
+                            $(function () {
+                                $('#giftcardcouponcode').keydown(function (event) {
+                                    if (event.keyCode == 13) {
+                                        $('#checkbalancegiftcard').trigger('click');
+                                        return false;
+                                    }
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </form>
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CustomerCheckGiftCardBalanceBottom, additionalData = Model })
+    </div>
+</div>

@@ -1,0 +1,65 @@
+﻿@model NewsItemListModel
+
+@using Nop.Core.Domain.News
+
+@{
+    Layout = "_ColumnsTwo";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.NewsArchive").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-news-list-page");
+}
+
+@*page title*@
+@section Breadcrumb
+{
+    <div class="page-title">
+        <div class="container">
+            <div class="content">
+                <h1>@T("News")</h1>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="page news-list-page">
+    <div class="page-body">
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.NewsListPageBeforeItems, additionalData = Model })
+        <a href="@Url.RouteUrl("NewsRSS", new { languageId = Model.WorkingLanguageId })" class="link-rss" title="@T("News.RSS.Hint")">
+            <i class="fas fa-rss"></i>
+        </a>
+        <div class="news-items">
+            @foreach (var item in Model.NewsItems)
+            {
+                <div class="section">
+                    <div class="news-item">
+                        <div class="news-head title">
+                            <a class="news-title" href="@(Url.RouteUrl<NewsItem>(new { SeName = item.SeName }))">@item.Title</a>
+                        </div>
+                        <div class="news-info">
+                            <div class="news-body">
+                                <span class="news-date">-@item.CreatedOn.ToString("D")</span>
+                                <p>@Html.Raw(item.Short)</p>
+                            </div>
+                            <div class="buttons">
+                                <a href="@(Url.RouteUrl<NewsItem>(new { SeName = item.SeName }))" class="read-more btn btn-primary">@T("News.MoreInfo")</a>
+                            </div>
+                            @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.NewsListPageInsideItem, additionalData = item })
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        @{
+            var pager = Html.Pager(Model.PagingFilteringContext).QueryParam("pagenumber");
+        }
+        @if (!(await pager.IsEmpty()))
+        {
+            <div class="pager Page navigation">
+                @pager
+            </div>
+        }
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.NewsListPageAfterItems, additionalData = Model })
+    </div>
+</div>

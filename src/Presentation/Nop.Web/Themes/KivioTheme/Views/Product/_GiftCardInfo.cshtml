@@ -1,0 +1,50 @@
+﻿@model ProductDetailsModel.GiftCardModel
+@if (Model.IsGiftCard)
+{
+    <div class="giftcard">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <label asp-for="RecipientName" class="col-form-label" asp-postfix=":"></label>
+                    <div>
+                        <input asp-for="RecipientName" class="recipient-name form-control" placeholder="@T("Products.GiftCard.RecipientName")" />
+                        <nop-required />
+                    </div>
+                </div>
+                @if (Model.GiftCardType == Nop.Core.Domain.Catalog.GiftCardType.Virtual)
+                {
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                        <label asp-for="RecipientEmail" class="col-form-label" asp-postfix=":"></label>
+                        <div>
+                            <input asp-for="RecipientEmail" class="recipient-email form-control" placeholder="@T("Products.GiftCard.RecipientEmail")" />
+                            <nop-required />
+                        </div>
+                    </div>
+                }
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <label asp-for="SenderName" class="col-form-label" asp-postfix=":"></label>
+                    <div>
+                        <input asp-for="SenderName" class="sender-name form-control" placeholder="@T("Products.GiftCard.SenderName")" />
+                        <nop-required />
+                    </div>
+                </div>
+                @if (Model.GiftCardType == Nop.Core.Domain.Catalog.GiftCardType.Virtual)
+                {
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                        <label asp-for="SenderEmail" class="col-form-label" asp-postfix=":"></label>
+                        <div>
+                            <input asp-for="SenderEmail" class="sender-email form-control" placeholder="@T("Products.GiftCard.SenderEmail")" />
+                            <nop-required />
+                        </div>
+                    </div>
+                }
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <label asp-for="Message" class="col-form-label" asp-postfix=":"></label>
+                    <div>
+                        <textarea asp-for="Message" rows="5" class="message form-control" placeholder="@T("Products.GiftCard.Message")"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

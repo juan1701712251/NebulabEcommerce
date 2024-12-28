@@ -1,0 +1,28 @@
+﻿@model SubscriptionActivationModel
+
+@{
+    Layout = "_ColumnsOne";
+
+    //page class
+    NopHtml.AppendPageCssClassParts("html-newsletter-page");
+}
+
+@*page title*@
+@section Breadcrumb
+{
+    <div class="page-title">
+        <div class="container">
+            <div class="content">
+                <h1>@T("Newsletter.Title")</h1>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="page newsletter-page">
+    <div class="page-body">
+        <strong>
+            @Model.Result
+        </strong>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+﻿@model NewProductsModel
+@{
+    Layout = "_ColumnsTwo";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.NewProducts").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-recently-added-products-page");
+}
+@*page title*@
+@section Breadcrumb
+    {
+    <div class="page-title">
+        <div class="container">
+            <div class="content">
+                <h1>@T("Products.NewProducts")</h1>
+            </div>
+        </div>
+    </div>
+}
+<div class="page recently-added-products-page">
+    <div class="page-body">
+        <a href="@Url.RouteUrl("NewProductsRSS")" class="link-rss" title="@T("Products.NewProducts.RSS.Hint")"><i class="fas fa-rss"></i></a>
+        @await Html.PartialAsync("_CatalogSelectors", Model.CatalogProductsModel)
+        @{ 
+            var newProductsViewData = new ViewDataDictionary(ViewData);
+            newProductsViewData["fetchUrl"] = Html.Raw(Url.RouteUrl("GetNewProducts"));
+        }
+        @await Html.PartialAsync("_CatalogProducts", Model.CatalogProductsModel, newProductsViewData)
+    </div>
+</div>

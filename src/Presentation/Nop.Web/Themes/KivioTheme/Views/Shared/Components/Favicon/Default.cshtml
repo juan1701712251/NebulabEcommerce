@@ -1,0 +1,16 @@
+﻿@model FaviconAndAppIconsModel
+
+
+@{
+
+    string? umbracoFaviconUrl = null;
+}
+
+@if (!string.IsNullOrEmpty(umbracoFaviconUrl))
+{
+    <link rel="icon" href="@umbracoFaviconUrl" type="image/png" />
+}
+else
+{
+    @Html.Raw(Model.HeadCode)
+}

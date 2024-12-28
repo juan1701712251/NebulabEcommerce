@@ -1,0 +1,43 @@
+﻿@inject Nop.Core.IWebHelper webHelper
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    var url = httpContextAccessor.HttpContext.Request.Scheme + "://"
+            + httpContextAccessor.HttpContext.Request.Host.ToString() + '/'
+            + httpContextAccessor.HttpContext.Request.Path.ToString().Split('/')[1];
+}
+<div class="container">
+    <a class="skip" href="#main">@T("Header.SkipNavigation.Text")</a>
+    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = "header_before" })
+    <div class="header-upper">
+        <div class="header-selectors-wrapper">
+            @await Component.InvokeAsync(typeof(CurrencySelectorViewComponent))
+            @await Component.InvokeAsync(typeof(LanguageSelectorViewComponent))
+            @await Component.InvokeAsync(typeof(TaxTypeSelectorViewComponent))
+            @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = "header_selectors" })
+        </div>
+    </div>
+    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = "header_middle" })
+    <div class="header-lower">
+        <div class="header-menu mobile-option">
+            <span class="mobile-menu"><i class="fal fa-bars"></i></span>
+            <div class="category-menu mobile-overlay">
+                @await Component.InvokeAsync(typeof(TopMenuViewComponent))
+            </div>
+        </div>
+        <div class="search-wrapper mobile-option">
+            <span class="search-icon"><i class="far fa-search"></i></span>
+            <div class="search-popup mobile-overlay">
+                <div class="close"><i class="far fa-times"></i></div>
+                <div class="search-box store-search-box input-group" itemscope itemtype="http://schema.org/WebSite">
+                    <meta itemprop="url" content="@url" />
+                    <meta itemprop="name" content="FurnishTheme" />
+                    @await Component.InvokeAsync(typeof(SearchBoxViewComponent))
+                </div>
+            </div>
+        </div>
+        @await Component.InvokeAsync(typeof(LogoViewComponent))
+        @await Component.InvokeAsync(typeof(HeaderLinksViewComponent))
+    </div>
+    @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = "header_after" })
+</div>

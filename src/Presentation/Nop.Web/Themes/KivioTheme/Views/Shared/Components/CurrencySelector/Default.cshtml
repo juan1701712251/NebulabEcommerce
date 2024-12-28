@@ -1,0 +1,32 @@
+﻿@model CurrencySelectorModel
+
+@inject Nop.Core.IWebHelper webHelper
+@if (Model.AvailableCurrencies.Count > 1)
+{
+    <div class="currency-selector form-group">
+        @{
+            var returnUrl = webHelper.GetRawUrl(Context.Request);
+            var currencies = await Model.AvailableCurrencies.SelectAwait(async x => new SelectListItem
+            {
+                Text = x.Name,
+                Value = Url.RouteUrl("ChangeCurrency", new { customercurrency = x.Id, returnUrl }, webHelper.GetCurrentRequestProtocol()),
+                Selected = x.Id.Equals(Model.CurrentCurrencyId)
+            }).ToListAsync();
+            //<select id="customerCurrency" class="form-control select-currency" name="customerCurrency" asp-items="@currencies" onchange="setLocation(this.value);" aria-label="@T("Currency.Selector.Label")"></select>
+            <div class="select-option currency-value currency-menu">
+                @foreach (var currency in currencies)
+                {
+                    if (currency.Selected) @currency.Text
+                }
+            </div>
+            <ul class="drop-down-list currency-list">
+                @foreach (var currency in currencies)
+                {
+                    <li class="@(currency.Selected?"selected value":"value")" onclick="setLocation(`@(currency.Value)`);">
+                        @currency.Text
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+}

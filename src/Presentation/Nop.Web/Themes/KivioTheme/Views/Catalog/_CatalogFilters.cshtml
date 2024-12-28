@@ -1,0 +1,32 @@
+﻿@model CatalogProductsModel
+
+@if (!Model.PriceRangeFilter.Enabled &&
+     !Model.SpecificationFilter.Enabled &&
+     !Model.ManufacturerFilter.Enabled)
+{
+    return;
+}
+@if (Model.PriceRangeFilter.Enabled || Model.SpecificationFilter.Enabled || Model.ManufacturerFilter.Enabled)
+{
+    <div class="block-product-filter mobile-filter" id="mobile-filter">
+        <div class="product-filters">
+            <div class="product-filter-title">
+                <a href="javascript:void(0)" class="closebtn" onclick="closeFilter()"><i class="far fa-times"></i></a>
+            </div>
+            @if (Model.PriceRangeFilter.Enabled)
+            {
+                @await Html.PartialAsync("_FilterPriceBox", Model.PriceRangeFilter)
+            }
+
+            @if (Model.SpecificationFilter.Enabled)
+            {
+                @await Html.PartialAsync("_FilterSpecsBox", Model.SpecificationFilter)
+            }
+
+            @if (Model.ManufacturerFilter.Enabled)
+            {
+                @await Html.PartialAsync("_FilterManufacturerBox", Model.ManufacturerFilter)
+            }
+        </div>
+    </div>
+}

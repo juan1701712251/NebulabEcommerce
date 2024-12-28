@@ -1,0 +1,87 @@
+﻿@model EditForumPostModel
+@using Nop.Core.Domain.Forums;
+
+@{
+    //page class
+    NopHtml.AppendPageCssClassParts("html-forum-edit-page");
+}
+@*page title*@
+<div class="page-title">
+    <div class="container">
+        <div class="content">
+            @if (Model.IsEdit)
+            {
+                <h1>@T("Forum.EditPost")</h1>
+            }
+            else
+            {
+                <h1>@T("Forum.NewPost")</h1>
+            }
+            @await Component.InvokeAsync(typeof(ForumBreadcrumbViewComponent), new { forumTopicId = Model.ForumTopicId })
+        </div>
+    </div>
+</div>
+<div class="page forum-edit-page">
+    <div class="page-body">
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-12 col-md-8 col-lg-8 col-xl-6">
+                <div class="form">
+                    <div asp-validation-summary="ModelOnly" class="message-error"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="ForumTopicId" />
+                    <div class="fieldset">
+                        <div class="form-fields">
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-form-label">@T("Forum.ForumName"):</label>
+                                    <strong class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 forum-label">@Model.ForumName</strong>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-form-label">@T("Forum.TopicTitle"):</label>
+                                    <strong class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 forum-label">@Model.ForumTopicSubject</strong>
+                                </div>
+                            </div>
+                            <div class="form-group text-area">
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                        @if (Model.ForumEditor == EditorType.BBCodeEditor)
+                                        {
+                                            <nop-bb-code-editor asp-for="Text" />
+                                        }
+                                        <textarea asp-for="Text" class="forum-post-text form-control" placeholder="Post description"></textarea>
+                                        <span asp-validation-for="Text"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (Model.IsCustomerAllowedToSubscribe)
+                            {
+                                <div class="form-group reversed">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 notify-me">
+                                            <div class="custom-control custom-checkbox">
+                                                <input asp-for="Subscribed" type="checkbox" class="custom-control-input" id="Subscribed" />
+                                                <label class="custom-control-label" for="Subscribed">@T("Forum.NotifyWhenSomeonePostsInThisTopic")</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            @if (Model.DisplayCaptcha)
+                            {
+                                <div class="captcha-box col-12 offset-lg-1">
+                                    <nop-captcha />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="buttons">
+                        <button type="submit" class="button-1 btn btn-primary submit-post-button">@T("Forum.Submit")</button>
+                        <button type="button" class="button-2 btn btn-default cancel-post-button" onclick="setLocation('@Url.RouteUrl("TopicSlug", new {id = Model.ForumTopicId, slug = Model.ForumTopicSeName})')">@T("Forum.Cancel")</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

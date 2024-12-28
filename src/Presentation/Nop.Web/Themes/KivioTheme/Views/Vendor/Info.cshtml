@@ -1,0 +1,95 @@
+﻿@model VendorInfoModel
+
+@{
+    Layout = "_ColumnsTwo";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.VendorInfo").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-account-page");
+    NopHtml.AppendPageCssClassParts("html-vendorinfo-page");
+}
+@section left
+{
+    @await Component.InvokeAsync(typeof(CustomerNavigationViewComponent), new { selectedTabId = CustomerNavigationEnum.VendorInfo })
+}
+
+@*page title*@
+@section Breadcrumb
+{
+    <div class="page-title">
+        <div class="container">
+            <div class="content">
+                <h1>@T("Account.MyAccount") - @T("Account.VendorInfo")</h1>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="page account-page vendorinfo-page">
+    <div class="page-body">
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.VendorInfoTop, additionalData = Model })
+        <form asp-route="CustomerVendorInfo" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-12 col-sm-12 col-md-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+                    <div asp-validation-summary="ModelOnly" class="message-error"></div>
+                    <div class="fieldset">
+                        <div class="form-fields">
+                            <div class="form-group">
+                                <div class="row">
+                                    <label asp-for="Name" asp-postfix=":" class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-form-label"></label>
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <input asp-for="Name" class="form-control" placeholder="Name" />
+                                        <nop-required />
+                                        <span asp-validation-for="Name"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label asp-for="Email" asp-postfix=":" class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-form-label"></label>
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <input asp-for="Email" class="form-control" placeholder="Email" />
+                                        <nop-required />
+                                        <span asp-validation-for="Email"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label asp-for="Description" asp-postfix=":" class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-form-label"></label>
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <textarea asp-for="Description" class="form-control" placeholder="Description"></textarea>
+                                        <span asp-validation-for="Description"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label asp-for="PictureUrl" asp-postfix=":" class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-form-label"></label>
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <input name="uploadedFile" type="file" accept="image/*" class="form-control-file" />
+
+                                        @if (!string.IsNullOrEmpty(Model.PictureUrl))
+                                        {
+                                            <div class="vendor-picture">
+                                                <img src="@(Model.PictureUrl)" alt="picture" />
+                                                <button type="submit" name="remove-picture" class="button-2 btn btn-default remove-picture-button">@T("Account.VendorInfo.Picture.Remove")</button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @if (Model.VendorAttributes.Count > 0)
+                    {
+                        <div class="fieldset">
+                            <div class="form-fields">
+                                @await Html.PartialAsync("_VendorAttributes", Model.VendorAttributes)
+                            </div>
+                        </div>
+                    }
+                    <div class="buttons">
+                        <button type="submit" name="save-info-button" class="button-1 btn btn-primary save-vendorinfo-button">@T("Common.Save")</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.VendorInfoBottom, additionalData = Model })
+    </div>
+</div>

@@ -1,0 +1,30 @@
+﻿@model ShoppingCartModel
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.ShoppingCart").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-shopping-cart-page");
+}
+
+@*category breadcrumb*@
+@section Breadcrumb
+{
+    <div class="page-title panel-heading">
+        <div class="container">
+            <div class="content">
+                <h1>@T("ShoppingCart")</h1>
+            </div>
+        </div>
+    </div>
+}
+<div class="page shopping-cart-page">
+    @if (!Model.OnePageCheckoutEnabled)
+    {
+        @await Component.InvokeAsync(typeof(CheckoutProgressViewComponent), new {step = CheckoutProgressStep.Cart})
+    }
+    <div class="page-body panel-body">
+        @await Component.InvokeAsync(typeof(OrderSummaryViewComponent), new { overriddenModel = Model})
+    </div>
+</div>

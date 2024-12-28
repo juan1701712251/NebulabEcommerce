@@ -1,0 +1,50 @@
+﻿@model CheckoutCompletedModel
+
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.Checkout").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-checkout-page");
+    NopHtml.AppendPageCssClassParts("html-order-completed-page");
+
+}
+@*page title*@
+@section Breadcrumb
+{
+    <div class="page-title">
+        <div class="container">
+            <div class="content">
+                <h1>@T("Checkout.ThankYou")</h1>
+            </div>
+        </div>
+    </div>
+}
+<div class="page checkout-page order-completed-page">
+    @if (!Model.OnePageCheckoutEnabled)
+    {
+        @await Component.InvokeAsync(typeof(CheckoutProgressViewComponent),  new { step = CheckoutProgressStep.Complete })
+    }
+    <div class="page-body checkout-data">
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CheckoutCompletedTop, additionalData = Model })
+        <div class="section order-completed">
+            <div class="box-shadow-container">
+                <div class="box-content">
+                    <div class="box-symbol"><i class="fal fa-check-circle"></i></div>
+                    <div class="box-title">@T("Checkout.YourOrderHasBeenSuccessfullyProcessed")</div>
+                    <div class="details">
+                        <div class="order-number">
+                            <span class="label">@T("Checkout.OrderNumber"):</span><span>@Model.CustomOrderNumber</span>
+                        </div>
+                        <div class="details-link">
+                            <a href="@Url.RouteUrl("OrderDetails", new { orderID = Model.OrderId })">@T("Checkout.PlacedOrderDetails")</a>
+                        </div>
+                    </div>
+                    <button type="button" class="button-1 box-button btn btn-primary order-completed-continue-button" onclick="setLocation('@Url.RouteUrl("Homepage")')">@T("Checkout.ThankYou.Continue")</button>
+                </div>
+            </div>
+        </div>
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.CheckoutCompletedBottom, additionalData = Model })
+    </div>
+</div>

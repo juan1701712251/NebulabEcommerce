@@ -1,0 +1,23 @@
+﻿@model LogoModel
+
+@using System.Threading.Tasks
+
+<div class="logo">
+    @{
+
+
+        string? umbracoLogoUrl = null;
+
+        string finalLogoUrl = !string.IsNullOrEmpty(umbracoLogoUrl)
+            ? umbracoLogoUrl
+            : Model.LogoPath;
+
+    }
+
+    <a href="@Url.RouteUrl("Homepage")" itemscope itemtype="http://schema.org/Organization">
+        <img itemprop="logo"
+             title=""
+             alt="@Model.StoreName"
+             src="@finalLogoUrl"/>
+    </a>
+</div>
